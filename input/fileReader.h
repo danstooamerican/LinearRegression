@@ -3,6 +3,11 @@
 
 #include "../linearRegression/linearRegression.h"
 
-extern DataPoint* readFile(char*);
+typedef struct {
+    int size;
+    DataPoint* array;
+} DataArray;
+
+extern DataArray readFile(char*);
 
 #endif
