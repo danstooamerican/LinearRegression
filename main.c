@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "data.h"
 #include "input/fileReader.h"
+#include "linearRegression/linearRegression.h"
 
 void printValues(DataArray values) {
     const char LIST_OPTION = 'l';
@@ -14,11 +16,17 @@ void printValues(DataArray values) {
     if (c == LIST_OPTION) {
         DataPoint *array = values.array;
         for (int i = 0; i < values.size; i++) {
-            printf("%lf : %lf\n", array[i].x, array[i].y);
+            printf("x: %lf : y: %lf\n", array[i].x, array[i].y);
         }
     }
 
     printf("\n");
+}
+
+void printResult(DataPoint result) {
+    printf("Result:\n");
+    printf("b* = %lf\n", result.x);
+    printf("a* = %lf\n", result.y);
 }
 
 /*
@@ -47,6 +55,10 @@ int main(int argc, char** argv) {
     values = readFile(argv[DATA_PATH]);
 
     printValues(values);
+
+    DataPoint result = calculate(values);
+
+    printResult(result);
 
     return EXIT_SUCCESS;
 }

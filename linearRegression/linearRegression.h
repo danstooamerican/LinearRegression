@@ -1,6 +1,9 @@
-typedef struct {
-    double x;
-    double y;
-} DataPoint;
+#ifndef LINEARREGRESSION_H
+#define LINEARREGRESSION_H
 
-extern DataPoint calculate(DataPoint* data);
+#include "../data.h"
+#include "../input/fileReader.h"
+
+extern DataPoint calculate(DataArray data);
+
+#endif
