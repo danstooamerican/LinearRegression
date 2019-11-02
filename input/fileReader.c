@@ -16,12 +16,50 @@ void resizeArray(DataPoint** array, size_t n)
     }   
 }
 
-DataArray readFile(char* path) {
+void resizeArrayExact(ExactDataPoint** array, size_t n)
+{
+    ExactDataPoint *temp = (ExactDataPoint*)realloc(*array, (n * sizeof(**array)));
+
+    if (temp == NULL)
+    {
+        printf("Cannot allocate more memory.\n");
+        free(temp);
+    } else {
+        *array = temp;
+    }   
+}
+
+DataPoint parseLine(char *line) 
+{
+    char *xValue = strtok(line, " ");
+    char *yValue = strtok(NULL, " ");
+
+    return (DataPoint){atof(xValue), atof(yValue)};
+}
+
+ExactDataPoint parseLineExact(char *line) 
+{
+    char *xValue = strtok(line, " ");
+    char *yValue = strtok(NULL, " ");
+
+    char *xNumerator = strtok(xValue, "/");
+    char *xDenominator = strtok(NULL, "/");
+
+    char *yNumerator = strtok(yValue, "/");
+    char *yDenominator = strtok(NULL, "/");
+
+    return (ExactDataPoint){{atof(xNumerator), atof(xDenominator)}, {atof(yNumerator), atof(yDenominator)}};
+}
+
+DataArray readFile(char* path) 
+{
     FILE *fp = fopen(path, "r");
     
-    if (fp == NULL) {
+    if (fp == NULL) 
+    {
         printf("Error opening file.\n");
-    } else {
+    } else 
+    {
         int readDataPoints = 0;
         int size = 1;
 
@@ -30,16 +68,15 @@ DataArray readFile(char* path) {
 
         const int MAX_READ = 1024;
         char str[MAX_READ];
-        while (fgets(str, MAX_READ, fp) != NULL) {
-            if (readDataPoints == size) {
+        while (fgets(str, MAX_READ, fp) != NULL) 
+        {
+            if (readDataPoints == size) 
+            {
                 resizeArray(&dataPoints, size * 2);
                 size *= 2;
-            }            
+            }
 
-            char *xValue = strtok(str, " ");
-            char *yValue = strtok(NULL, " ");
-
-            DataPoint dataPoint = {atof(xValue), atof(yValue)};
+            DataPoint dataPoint = parseLine(str);
             
             dataPoints[readDataPoints] = dataPoint;
             readDataPoints++;
@@ -47,8 +84,45 @@ DataArray readFile(char* path) {
 
         fclose(fp);
 
-        DataArray dataArray = {readDataPoints, dataPoints};
+        return (DataArray){readDataPoints, dataPoints};
+    }    
+}
 
-        return dataArray;
+ExactDataArray readFileExact(char *path) 
+{
+    FILE *fp = fopen(path, "r");
+    
+    if (fp == NULL) 
+    {
+        printf("Error opening file.\n");
+    } else 
+    {
+        int readDataPoints = 0;
+        int size = 1;
+
+        ExactDataPoint *dataPoints;
+        dataPoints = (ExactDataPoint*) malloc(size * sizeof(ExactDataPoint));
+
+        const int MAX_READ = 1024;
+        char str[MAX_READ];
+        while (fgets(str, MAX_READ, fp) != NULL) 
+        {
+            if (readDataPoints == size) 
+            {
+                resizeArrayExact(&dataPoints, size * 2);
+                size *= 2;
+            }
+            
+            ExactDataPoint dataPoint = parseLineExact(str);
+            
+            dataPoints[readDataPoints] = dataPoint;
+            readDataPoints++;
+        }
+
+        fclose(fp);
+
+        ExactDataArray result ={readDataPoints, dataPoints};
+
+        return result;
     }    
 }

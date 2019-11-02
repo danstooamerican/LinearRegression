@@ -7,4 +7,6 @@
 
 extern DataArray readFile(char*);
 
+extern ExactDataArray readFileExact(char*);
+
 #endif
