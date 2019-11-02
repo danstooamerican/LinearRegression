@@ -6,4 +6,6 @@
 
 extern DataPoint calculate(DataArray data);
 
+extern ExactDataPoint calculateExact(ExactDataArray data);
+
 #endif
